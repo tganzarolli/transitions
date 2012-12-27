@@ -23,7 +23,7 @@
 module Transitions
   class Machine
     attr_writer :initial_state
-    attr_accessor :states, :events, :state_index
+    attr_accessor :states, :events, :state_index, :state_column
     attr_reader :klass, :auto_scopes
 
     def initialize(klass, options = {}, &block)
@@ -38,6 +38,7 @@ module Transitions
     def update(options = {}, &block)
       @initial_state = options[:initial] if options.key?(:initial)
       @auto_scopes = options[:auto_scopes]
+      @state_column = options[:state_column] || 'state'
       instance_eval(&block) if block
       include_scopes if @auto_scopes && ::Transitions.active_record_descendant?(klass)
       self
@@ -102,7 +103,7 @@ module Transitions
         if @klass.respond_to?(state_name)
           raise InvalidMethodOverride, "Transitions: Can not define scope `#{state_name}` because there is already an equally named method defined - either rename the existing method or the state."
         end
-        @klass.scope state_name, @klass.where(@klass.state_column => state_name)
+        @klass.scope state_name, @klass.where(@state_column => state_name)
       end
     end
   end
