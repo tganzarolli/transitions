@@ -44,6 +44,8 @@ module Transitions
     def state_machine(options = {}, &block)
       @state_machine ||= Machine.new self
       block ? @state_machine.update(options, &block) : @state_machine
+      validates_presence_of @state_machine.state_column.to_sym
+      @state_machine
     end
 
     def get_state_machine; @state_machine; end
