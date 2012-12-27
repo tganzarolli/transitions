@@ -68,8 +68,8 @@ module ActiveModel
     end
 
     def state_inclusion
-      unless self.class.get_state_machine.states.map{|s| s.name.to_s }.include?(self.state.to_s)
-        self.errors.add(:state, :inclusion, :value => self.state)
+      unless self.class.get_state_machine.states.map{|s| s.name.to_s }.include?(self.send(state_column).to_s)
+        self.errors.add(self.state_column.to_sym, :inclusion, :value => self.send(state_column))
       end
     end
   end
