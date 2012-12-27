@@ -27,7 +27,6 @@ module ActiveModel
     included do
       include ::Transitions
       after_initialize :set_initial_state
-      validates_presence_of state_column
       validate :state_inclusion
     end
     
@@ -65,6 +64,10 @@ module ActiveModel
 
     def set_initial_state
       send "#{state_column}=", self.class.get_state_machine.initial_state.to_s unless send(state_column)
+    end
+
+    def state_column
+      self.class.get_state_machine.state_column 
     end
 
     def state_inclusion
